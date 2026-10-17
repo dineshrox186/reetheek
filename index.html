@@ -50,7 +50,7 @@ footer{text-align:center}
 <canvas id="sky" aria-hidden="true"></canvas><div class="grain" aria-hidden="true"></div>
 <div class="wrap">
  <header><span class="mono amber">PERSONAL ARCHIVE // GOLDEN HOUR</span>
-  <button id="snd" type="button" aria-pressed="false" aria-label="Toggle ambient sound"><span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="sndT">SOUND OFF</span></button></header>
+  <button id="snd" type="button" aria-pressed="false" aria-label="Toggle ambient sound"><span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="sndT">MUSIC OFF</span></button></header>
 
  <div class="hero"><h1>HRITHIK</h1></div>
 
@@ -132,7 +132,7 @@ async function setSound(v){
  try{if(v){try{new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAAA=").play().catch(()=>{})}catch(e){}if(AUDIO_SRC&&!audioEl&&!bad){audioEl=new Audio(AUDIO_SRC);audioEl.loop=true;audioEl.preload="auto";audioEl.autoplay=true;audioEl.volume=.35;audioEl.onerror=()=>{audioEl=null;bad=true}}
   if(audioEl)await audioEl.play();else{AC();await ac.resume();if(ac.state!=="running")throw{name:"NotAllowedError"};master.gain.setTargetAtTime(.9,ac.currentTime,1.2);startPiano()}}
  else{if(audioEl)audioEl.pause();if(master)master.gain.setTargetAtTime(0,ac.currentTime,.4);stopPiano()}on=v}catch(e){if(audioEl&&e.name!=="NotAllowedError"){audioEl=null;bad=true;return setSound(true)}on=false}
- const b=$("#snd");b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);b.setAttribute("aria-label",on?"Turn ambient sound off":"Enable ambient sound");$("#sndT").textContent=on?"SOUND ON":(v?"TAP FOR SOUND":"SOUND OFF")}
+ const b=$("#snd");b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);b.setAttribute("aria-label",on?"Turn ambient sound off":"Enable ambient sound");$("#sndT").textContent=on?"MUSIC ON":(v?"TAP FOR MUSIC":"MUSIC OFF")}
 let auto=true;
 $("#snd").addEventListener("click",()=>{auto=false;setSound(!on)});
 const evs=["pointerdown","keydown","touchend"];
