@@ -115,7 +115,8 @@ let raf;function loop(t=0){draw(t);raf=requestAnimationFrame(loop)}
 document.addEventListener("visibilitychange",()=>{if(document.hidden)cancelAnimationFrame(raf);else if(!RM)loop()});
 RM?draw(0):loop();
 
-let ac,master,audioEl,on=false,bad=false;
+let ac,master,audioEl=null,on=false,bad=false;
+if(AUDIO_SRC){audioEl=new Audio(AUDIO_SRC);audioEl.loop=true;audioEl.preload="auto";audioEl.autoplay=true;audioEl.volume=.35;audioEl.onerror=()=>{audioEl=null;bad=true}}
 function AC(){if(ac)return;ac=new(window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=0;master.connect(ac.destination);
  const f=ac.createBiquadFilter();f.type="lowpass";f.frequency.value=2000;f.connect(master);
  const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=.07;lg.gain.value=800;l.connect(lg);lg.connect(f.frequency);l.start();
@@ -128,10 +129,10 @@ function startPiano(){stopPiano();if(!pbus){pbus=ac.createGain();pbus.connect(ma
  const tick=()=>{const t=ac.currentTime+.05,c=C[(ps/8|0)%4];if(ps%8==0)key(c[0]-12,t,3.2,.3);key(c[P[ps%8]],t,2,.2);ps++};tick();pt=setInterval(tick,520)}
 function stopPiano(){clearInterval(pt)}
 async function setSound(v){
- try{if(v){try{new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAAA=").play().catch(()=>{})}catch(e){}if(AUDIO_SRC&&!audioEl&&!bad){audioEl=new Audio(AUDIO_SRC);audioEl.loop=true;audioEl.volume=.35;audioEl.onerror=()=>{audioEl=null;bad=true}}
+ try{if(v){try{new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAAA=").play().catch(()=>{})}catch(e){}if(AUDIO_SRC&&!audioEl&&!bad){audioEl=new Audio(AUDIO_SRC);audioEl.loop=true;audioEl.preload="auto";audioEl.autoplay=true;audioEl.volume=.35;audioEl.onerror=()=>{audioEl=null;bad=true}}
   if(audioEl)await audioEl.play();else{AC();await ac.resume();if(ac.state!=="running")throw{name:"NotAllowedError"};master.gain.setTargetAtTime(.9,ac.currentTime,1.2);startPiano()}}
  else{if(audioEl)audioEl.pause();if(master)master.gain.setTargetAtTime(0,ac.currentTime,.4);stopPiano()}on=v}catch(e){if(audioEl&&e.name!=="NotAllowedError"){audioEl=null;bad=true;return setSound(true)}on=false}
- const b=$("#snd");b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);$("#sndT").textContent=on?"SOUND ON":"SOUND OFF"}
+ const b=$("#snd");b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);b.setAttribute("aria-label",on?"Turn ambient sound off":"Enable ambient sound");$("#sndT").textContent=on?"SOUND ON":(v?"TAP FOR SOUND":"SOUND OFF")}
 let auto=true;
 $("#snd").addEventListener("click",()=>{auto=false;setSound(!on)});
 const evs=["pointerdown","keydown","touchend"];
