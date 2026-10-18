@@ -41,6 +41,7 @@ header{display:flex;justify-content:space-between;align-items:center}
 .tick{height:8px;margin-top:6px;background:repeating-linear-gradient(90deg,var(--amber) 0 1px,transparent 1px 6px);opacity:.6}
 .proj{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .proj .ph{border:1px solid var(--amber);color:var(--amber);padding:5px 12px;font:400 11px var(--mono);letter-spacing:.14em;text-decoration:none;text-transform:uppercase;cursor:pointer;transition:.3s}.proj .ph:hover{background:var(--amber);color:var(--bg)}
+.laps{grid-column:1/-1}.laps h2{font:400 10px var(--mono);letter-spacing:.16em;color:var(--amber);margin:0 0 10px}.lap-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.lap{min-width:0;border-left:1px solid var(--amber);padding-left:10px}.lap .circuit{font:400 10px/1.5 var(--mono);letter-spacing:.04em;color:var(--silver);margin-bottom:7px}.lap .time{font:300 clamp(19px,4vw,34px)/1.1 var(--disp);white-space:nowrap;color:var(--ivory);font-variant-numeric:tabular-nums}.lap .label{font:400 9px var(--mono);letter-spacing:.14em;color:var(--amber);margin-top:5px}
 footer{text-align:center}
 @media(min-width:900px){.grid{grid-template-columns:1fr 1fr 2fr}.stats{grid-column:auto;grid-row:1}.proj{grid-column:1/-1}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}#snd:not(.on){box-shadow:0 0 12px 2px rgba(255,154,107,.7)}}
@@ -63,6 +64,7 @@ footer{text-align:center}
    <div class="stat"><div class="n">SQUAT</div><div class="num"><span data-to="85" data-d="0">0</span><small>KG</small></div><div class="tick"></div></div>
   </div>
   <div class="box proj" id="proj"><span class="mono amber">PROJECTS</span></div>
+  <section class="box laps" aria-label="Circuit lap times"><h2>TRACK RECORDS // LAP TIMES</h2><div class="lap-grid"><div class="lap"><div class="circuit">SILVERSTONE</div><div class="time">1:33.278</div><div class="label">PERSONAL BEST</div></div><div class="lap"><div class="circuit">AUTÓDROMO JOSÉ CARLOS PACE</div><div class="time">1:14.700</div><div class="label">PERSONAL BEST</div></div><div class="lap"><div class="circuit">JEDDAH CORNICHE CIRCUIT</div><div class="time">1:32.569</div><div class="label">PERSONAL BEST</div></div></div></section>
  </div>
 
  <footer class="mono">END OF DAY // HRITHIK</footer>
