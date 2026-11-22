@@ -15,6 +15,18 @@ html{color-scheme:dark;height:100%;-webkit-tap-highlight-color:transparent}
 ::selection{background:transparent;color:inherit}
 button{outline:0}
 body{margin:0;height:100%;background:var(--bg);color:var(--ivory);font:400 14px/1.4 var(--sans);overflow-x:hidden}
+#entry{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:24px;background:linear-gradient(180deg,rgba(27,16,32,.96),rgba(42,21,48,.94));text-align:center;transition:opacity .8s ease,visibility .8s ease}
+#entry::before,#entry::after{content:"";position:absolute;width:min(70vw,420px);height:min(70vw,420px);border:1px solid rgba(255,241,228,.09);border-radius:50%;pointer-events:none}
+#entry::after{width:min(52vw,310px);height:min(52vw,310px);border-color:rgba(255,154,107,.13)}
+#entry.closed{opacity:0;visibility:hidden;pointer-events:none}
+.entry-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:18px}
+.entry-title{font:300 clamp(42px,9vw,76px)/.95 var(--disp);letter-spacing:.035em;margin-top:12px;text-shadow:0 2px 35px rgba(255,140,100,.28)}
+.entry-copy{margin:0;color:var(--silver);font:italic 300 19px var(--disp)}
+#enterBtn{margin-top:14px;min-width:220px;display:flex;justify-content:space-between;align-items:center;gap:28px;padding:15px 18px;border:1px solid var(--amber);background:rgba(255,154,107,.08);color:var(--ivory);font:400 11px var(--mono);letter-spacing:.16em;cursor:pointer;transition:background .25s,transform .25s,box-shadow .25s}
+#enterBtn:hover{background:rgba(255,154,107,.18);transform:translateY(-2px);box-shadow:0 0 24px rgba(255,154,107,.2)}
+.entry-hint{font-size:9px;letter-spacing:.2em;opacity:.65;margin-top:4px}
+@media(prefers-reduced-motion:reduce){#entry{transition:none}#enterBtn{transition:none}}
+
 #sky{position:fixed;inset:0;width:100%;height:100%;z-index:0}
 .grain{position:fixed;inset:0;z-index:5;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 .wrap{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:14px clamp(14px,4vw,48px) 12px;gap:10px}
@@ -48,6 +60,15 @@ footer{text-align:center}
 </style>
 </head>
 <body>
+<div id="entry" role="dialog" aria-modal="true" aria-label="Enter portfolio">
+ <div class="entry-inner">
+  <span class="mono amber">PERSONAL ARCHIVE // HRITHIK</span>
+  <div class="entry-title">A moment<br>before you enter.</div>
+  <p class="entry-copy">A little music. A little piece of me.</p>
+  <button id="enterBtn" type="button"><span>ENTER PORTFOLIO</span><span aria-hidden="true">↗</span></button>
+  <span class="entry-hint mono">TAP TO BEGIN EXPERIENCE</span>
+ </div>
+</div>
 <canvas id="sky" aria-hidden="true"></canvas><div class="grain" aria-hidden="true"></div>
 <div class="wrap">
  <header><span class="mono amber">PERSONAL ARCHIVE // GOLDEN HOUR</span>
@@ -119,7 +140,7 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden)cancelAnima
 RM?draw(0):loop();
 
 let ac,master,audioEl=null,on=false,bad=false;
-if(AUDIO_SRC){audioEl=new Audio(AUDIO_SRC);audioEl.loop=true;audioEl.preload="auto";audioEl.autoplay=true;audioEl.volume=.35;audioEl.onerror=()=>{audioEl=null;bad=true}}
+if(AUDIO_SRC){audioEl=new Audio(AUDIO_SRC);audioEl.loop=true;audioEl.preload="auto";audioEl.autoplay=false;audioEl.volume=.35;audioEl.onerror=()=>{audioEl=null;bad=true}}
 function AC(){if(ac)return;ac=new(window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=0;master.connect(ac.destination);
  const f=ac.createBiquadFilter();f.type="lowpass";f.frequency.value=2000;f.connect(master);
  const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=.07;lg.gain.value=800;l.connect(lg);lg.connect(f.frequency);l.start();
@@ -136,12 +157,12 @@ async function setSound(v){
   if(audioEl)await audioEl.play();else{AC();await ac.resume();if(ac.state!=="running")throw{name:"NotAllowedError"};master.gain.setTargetAtTime(.9,ac.currentTime,1.2);startPiano()}}
  else{if(audioEl)audioEl.pause();if(master)master.gain.setTargetAtTime(0,ac.currentTime,.4);stopPiano()}on=v}catch(e){if(audioEl&&e.name!=="NotAllowedError"){audioEl=null;bad=true;return setSound(true)}on=false}
  const b=$("#snd");b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);b.setAttribute("aria-label",on?"Turn ambient sound off":"Enable ambient sound");$("#sndT").textContent="Music"}
-let auto=true;
-$("#snd").addEventListener("click",()=>{auto=false;setSound(!on)});
-const evs=["pointerdown","keydown","touchend"];
-const kick=e=>{if(e.target.closest&&e.target.closest("#snd"))return;evs.forEach(x=>removeEventListener(x,kick));if(auto&&!on)setSound(true)};
-evs.forEach(x=>addEventListener(x,kick));
-setSound(true).then(()=>{if(on)evs.forEach(x=>removeEventListener(x,kick))});
+$("#snd").addEventListener("click",()=>setSound(!on));
+$("#enterBtn").addEventListener("click",async()=>{
+ const entry=$("#entry");
+ entry.classList.add("closed");
+ await setSound(true);
+});
 </script>
 </body>
 </html>
