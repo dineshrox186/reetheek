@@ -85,7 +85,7 @@ const PC=["#ff9fb5","#ffc2cf","#ffb08a","#ffd9c0"];
 function np(init){return{x:rnd()*W,y:init?rnd()*H:-12,r:3+rnd()*3,vy:.35+rnd()*.5,vx:.15+rnd()*.35,ph:rnd()*6,a:rnd()*6,va:(rnd()-.5)*.04,c:PC[rnd()*4|0],h:rnd()<.22}}
 function ridge(base,amp,s,f){const a=[];for(let x=-40;x<=W+40;x+=8)a.push(base-amp*(.55*(1-Math.abs(Math.sin(x*f+s)))+.3*(1-Math.abs(Math.sin(x*f*2.3+s*2)))+.15*Math.sin(x*f*5+s)));return a}
 function size(){W=innerWidth;H=innerHeight;HZ=H*(MOB?.7:.72);cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0);
- skyG=cx.createLinearGradient(0,0,0,HZ);[[0,"#74c8f5"],[.35,"#a9ddf5"],[.68,"#e4f3d4"],[.88,"#ffe6a6"],[1,"#fff0c2"]].forEach(([o,c])=>skyG.addColorStop(o,c));
+ skyG=cx.createLinearGradient(0,0,0,HZ);[[0,"#1f1235"],[.35,"#4a2352"],[.62,"#9a4a6e"],[.82,"#e8806e"],[1,"#ffb98a"]].forEach(([o,c])=>skyG.addColorStop(o,c));
  stars=Array.from({length:MOB?30:60},()=>({x:rnd()*W,y:rnd()*HZ*.5,r:rnd()+.3,p:rnd()*6}));
  petals=Array.from({length:MOB?16:34},()=>np(true));
  clouds=Array.from({length:4},(_,i)=>({x:rnd()*W,y:H*(.14+i*.08),w:W*(.25+rnd()*.25),s:.08+rnd()*.12}));
@@ -94,21 +94,18 @@ function size(){W=innerWidth;H=innerHeight;HZ=H*(MOB?.7:.72);cv.width=W*DPR;cv.h
  const f=MOB?.008:.004;
  ridges=[ridge(HZ-H*.05,H*.11,1.3,f),ridge(HZ+H*.01,H*.11,4.1,f*1.3),ridge(HZ+H*.08,H*.1,7.7,f*1.7)]}
 function draw(t){const dt=Math.min(2,Math.max(.5,(t-lastT)/16.7||1));lastT=t;
- cx.fillStyle=skyG;cx.fillRect(0,0,W,HZ+2);cx.fillStyle="#8bcf82";cx.fillRect(0,HZ,W,H-HZ);
- for(const s of stars){cx.globalAlpha=0;}
+ cx.fillStyle=skyG;cx.fillRect(0,0,W,HZ+2);cx.fillStyle="#2a1530";cx.fillRect(0,HZ,W,H-HZ);
+ for(const s of stars){cx.globalAlpha=.25+.45*(.5+.5*Math.sin(t*.0012+s.p));cx.fillStyle="#fff1e4";cx.beginPath();cx.arc(s.x,s.y,s.r,0,6.283);cx.fill()}
  cx.globalAlpha=1;
  const sx=(MOB?W*.64:W*.68)+(mx-.5)*-16,sy=HZ-H*.12,R=(MOB?Math.min(W*.13,52):Math.min(W*.075,96))*(1+.012*Math.sin(t*.0007));
- let g=cx.createRadialGradient(sx,sy,R*.8,sx,sy,R*5);g.addColorStop(0,"rgba(255,239,165,.5)");g.addColorStop(1,"rgba(255,225,130,0)");cx.fillStyle=g;cx.fillRect(sx-R*5,sy-R*5,R*10,R*10);
- g=cx.createRadialGradient(sx,sy,0,sx,sy,R);g.addColorStop(0,"#fff9cf");g.addColorStop(1,"#ffd45e");cx.fillStyle=g;cx.beginPath();cx.arc(sx,sy,R,0,6.283);cx.fill();
- for(const c of clouds){c.x+=c.s*dt;if(c.x-c.w>W)c.x=-c.w;cx.fillStyle="rgba(255,255,255,.42)";for(let i=0;i<3;i++){cx.beginPath();cx.ellipse(c.x+i*c.w*.3,c.y+i*3,c.w*(.5-i*.1),9+i*2,0,0,6.283);cx.fill()}}
- cx.strokeStyle="rgba(55,83,74,.55)";cx.lineWidth=1.4;
+ let g=cx.createRadialGradient(sx,sy,R*.8,sx,sy,R*5);g.addColorStop(0,"rgba(255,190,130,.55)");g.addColorStop(1,"rgba(255,150,110,0)");cx.fillStyle=g;cx.fillRect(sx-R*5,sy-R*5,R*10,R*10);
+ g=cx.createRadialGradient(sx,sy,0,sx,sy,R);g.addColorStop(0,"#fff6dc");g.addColorStop(1,"#ffb070");cx.fillStyle=g;cx.beginPath();cx.arc(sx,sy,R,0,6.283);cx.fill();
+ for(const c of clouds){c.x+=c.s*dt;if(c.x-c.w>W)c.x=-c.w;cx.fillStyle="rgba(255,170,150,.16)";for(let i=0;i<3;i++){cx.beginPath();cx.ellipse(c.x+i*c.w*.3,c.y+i*3,c.w*(.5-i*.1),9+i*2,0,0,6.283);cx.fill()}}
+ cx.strokeStyle="rgba(42,21,48,.75)";cx.lineWidth=1.4;
  for(const b of birds){b.x+=b.s*dt;if(b.x>W+20)b.x=-20;const f=Math.sin(t*.006+b.p),y=b.y+Math.sin(t*.0006+b.p)*8;cx.beginPath();cx.moveTo(b.x-7,y);cx.quadraticCurveTo(b.x-3.5,y-5*f,b.x,y);cx.quadraticCurveTo(b.x+3.5,y-5*f,b.x+7,y);cx.stroke()}
- const cols=[["#a9c98b","#668f65"],["#6eaa70","#39734e"],["#43865a","#24583f"]];
+ const cols=[["#b0577a","#6d3560"],["#74375f","#3a1d40"],["#3a1c3f","#1b1020"]];
  ridges.forEach((r,k)=>{const ox=(mx-.5)*-(10+k*10),g2=cx.createLinearGradient(0,HZ-H*.2,0,H);g2.addColorStop(0,cols[k][0]);g2.addColorStop(1,cols[k][1]);cx.fillStyle=g2;cx.beginPath();cx.moveTo(-40+ox,H);r.forEach((y,i)=>cx.lineTo(-40+i*8+ox,y));cx.lineTo(W+40+ox,H);cx.closePath();cx.fill()});
- // A winding river reflecting the bright sky as it flows through the valley.
- const rg=cx.createLinearGradient(W*.35,HZ,W*.72,H);rg.addColorStop(0,"#b9e9e7");rg.addColorStop(.45,"#54b7c5");rg.addColorStop(1,"#287f9d");
- cx.fillStyle=rg;cx.beginPath();cx.moveTo(W*.47,HZ+H*.015);cx.bezierCurveTo(W*.40,HZ+H*.12,W*.65,HZ+H*.19,W*.55,HZ+H*.34);cx.bezierCurveTo(W*.47,HZ+H*.51,W*.77,HZ+H*.62,W*.68,H);cx.lineTo(W*.91,H);cx.bezierCurveTo(W*.91,HZ+H*.62,W*.62,HZ+H*.52,W*.68,HZ+H*.36);cx.bezierCurveTo(W*.78,HZ+H*.19,W*.48,HZ+H*.12,W*.56,HZ+H*.015);cx.closePath();cx.fill();
- cx.strokeStyle="rgba(238,255,232,.58)";cx.lineWidth=2;cx.beginPath();cx.moveTo(W*.515,HZ+H*.03);cx.bezierCurveTo(W*.47,HZ+H*.15,W*.69,HZ+H*.22,W*.59,HZ+H*.36);cx.bezierCurveTo(W*.53,HZ+H*.53,W*.78,HZ+H*.64,W*.74,H);cx.stroke();
+
  for(const p of petals){p.x+=(p.vx+Math.sin(t*.001+p.ph)*.5)*dt;p.y+=p.vy*dt;p.a+=p.va*dt;if(p.y>H+12||p.x>W+20)Object.assign(p,np(false),{x:rnd()*W*1.1-W*.1});
   cx.save();cx.translate(p.x,p.y);cx.rotate(p.a);cx.globalAlpha=.85;cx.fillStyle=p.c;cx.beginPath();
   if(p.h){const r=p.r;cx.moveTo(0,r*.3);cx.bezierCurveTo(-r,-r*.6,-r*.4,-r*1.1,0,-r*.4);cx.bezierCurveTo(r*.4,-r*1.1,r,-r*.6,0,r*.3)}else cx.ellipse(0,0,p.r,p.r*.55,0,0,6.283);
